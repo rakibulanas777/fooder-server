@@ -1,12 +1,23 @@
 const mongoose = require("mongoose");
 const OrdersSchema = new mongoose.Schema(
 	{
-		foods: {
-			type: Array,
+		title: {
+			type: String,
 		},
-		user: {
-			type: Object,
-			required: true,
+
+		qty: {
+			type: Number,
+		},
+
+		total: {
+			type: Number,
+		},
+
+		email: {
+			type: String,
+		},
+		imageurl: {
+			type: String,
 		},
 	},
 	{ timestamps: true }
