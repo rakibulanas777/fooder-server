@@ -1,4 +1,5 @@
 const bcrypt = require("bcrypt");
+const { promisify } = require("util");
 const jwt = require("jsonwebtoken");
 const User = require("../models/Users");
 const AppError = require("../utils/appError");
@@ -15,7 +16,7 @@ const register = catchAsync(async (req, res, next) => {
 		// passwordConfrim: hashConfrim,
 	);
 	const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET, {
-		expiresIn: "24h",
+		expiresIn: 5,
 	});
 	await newUser.save();
 	res.status(200).json({
@@ -29,7 +30,7 @@ const register = catchAsync(async (req, res, next) => {
 	next();
 });
 
-const getUsers = async (req, res, next) => {
+const getUsers = catchAsync(async (req, res, next) => {
 	const users = await User.find();
 	if (req.query.email) {
 		const search = req.query.email;
@@ -39,7 +40,7 @@ const getUsers = async (req, res, next) => {
 		res.status(200).json(users);
 	}
 	next();
-};
+});
 
 const login = catchAsync(async (req, res, next) => {
 	const { email, password } = req.body;
@@ -53,12 +54,43 @@ const login = catchAsync(async (req, res, next) => {
 		return next(new AppError("Incorrect email or password", 401));
 	}
 	const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
-		expiresIn: "24h",
+		expiresIn: 5,
 	});
 	res.status(200).json({
 		status: "sucess",
 		token,
 	});
+	next();
+});
+const protect = catchAsync(async (req, res, next) => {
+	let token;
+
+	token = req.headers.authorization.split(" ")[1];
+
+	if (!token) {
+		return next(
+			new AppError("You are not logged in ! Please log in to get access", 401)
+		);
+	}
+
+	const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
+	console.log(decoded);
+	const currentUser = await User.findById(decoded.id);
+	if (!currentUser) {
+		return next(
+			new AppError(
+				"The user belonging to this token does no longer exist.",
+				401
+			)
+		);
+	}
+	if (currentUser.changedPasswordAfter(decoded.iat)) {
+		return next(
+			new AppError("User recently changed password! Please log in again.", 401)
+		);
+	}
+	req.user = currentUser;
+	next();
 });
 
-module.exports = { getUsers, login, register };
+module.exports = { getUsers, login, register, protect };
