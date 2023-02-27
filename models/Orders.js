@@ -1,25 +1,23 @@
 const mongoose = require("mongoose");
+const Foods = require("./Foods");
 const OrdersSchema = new mongoose.Schema(
 	{
 		title: {
 			type: String,
+			required: true,
 		},
-
+		image: {
+			type: String,
+		},
 		qty: {
 			type: Number,
 		},
-
-		total: {
+		price: {
 			type: Number,
-		},
-
-		email: {
-			type: String,
-		},
-		imageurl: {
-			type: String,
+			required: true,
 		},
 	},
 	{ timestamps: true }
 );
+
 module.exports = mongoose.model("Orders", OrdersSchema);

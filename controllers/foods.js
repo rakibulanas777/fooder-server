@@ -16,12 +16,14 @@ const deleteFood = async (req, res, next) => {
 
 const getFoods = async (req, res, next) => {
 	const foods = await Foods.find();
-	if (req.query.catagory) {
+	if (req?.query.catagory != "all" && req.query.catagory) {
 		const search = req.query.catagory.toLowerCase();
 		const matched = foods.filter((Food) =>
 			Food.catagory.toLowerCase().includes(search)
 		);
 		res.status(200).json(matched);
+	} else if (req.query.catagory?.toLowerCase() === "all") {
+		res.status(200).json(foods);
 	} else {
 		res.status(200).json(foods);
 	}

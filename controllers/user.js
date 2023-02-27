@@ -1,13 +1,23 @@
+const bcrypt = require("bcrypt");
 const User = require("../models/Users");
 
 const register = async (req, res, next) => {
-	const newUser = new User({
-		...req.body,
-	});
+	const salt = bcrypt.genSaltSync(10);
+	const hash = bcrypt.hashSync(req.body.password, salt);
+	const hashConfrim = bcrypt.hashSync(req.body.passwordConfrim, salt);
 
-	await newUser.save();
+	try {
+		const newUser = new User({
+			...req.body,
+			password: hash,
+			passwordConfrim: hashConfrim,
+		});
 
-	res.status(200).send("User has been created.");
+		await newUser.save();
+		res.status(200).send("User has been created.");
+	} catch (error) {
+		console.log(error);
+	}
 	next();
 };
 
