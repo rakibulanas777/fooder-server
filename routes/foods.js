@@ -13,7 +13,7 @@ const router = express.Router();
 router.get("/:id", getFoodById);
 router.delete("/:id", deleteFood);
 router.put("/:id", updateFood);
-router.get("/", protect, getFoods);
+router.get("/", getFoods);
 router.post("/", createFood);
 
 module.exports = router;

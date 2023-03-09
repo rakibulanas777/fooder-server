@@ -16,7 +16,7 @@ const register = catchAsync(async (req, res, next) => {
 		// passwordConfrim: hashConfrim,
 	);
 	const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET, {
-		expiresIn: 5,
+		expiresIn: "5h",
 	});
 	await newUser.save();
 	res.status(200).json({
@@ -54,18 +54,21 @@ const login = catchAsync(async (req, res, next) => {
 		return next(new AppError("Incorrect email or password", 401));
 	}
 	const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
-		expiresIn: 5,
+		expiresIn: "5h",
 	});
 	res.status(200).json({
 		status: "sucess",
 		token,
+		data: {
+			user,
+		},
 	});
 	next();
 });
 const protect = catchAsync(async (req, res, next) => {
 	let token;
 
-	token = req.headers.authorization.split(" ")[1];
+	token = req.headers.authorization?.split(" ")[1];
 
 	if (!token) {
 		return next(

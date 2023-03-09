@@ -1,20 +1,17 @@
 const mongoose = require("mongoose");
 const Foods = require("./Foods");
+const User = require("./Users");
 const OrdersSchema = new mongoose.Schema(
 	{
-		title: {
-			type: String,
-			required: true,
-		},
-		image: {
-			type: String,
-		},
-		qty: {
-			type: Number,
-		},
-		price: {
-			type: Number,
-			required: true,
+		cart: [
+			{
+				type: mongoose.Schema.ObjectId,
+				ref: "Foods",
+			},
+		],
+		user: {
+			type: mongoose.Schema.ObjectId,
+			ref: "User",
 		},
 	},
 	{ timestamps: true }
