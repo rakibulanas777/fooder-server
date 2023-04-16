@@ -5,6 +5,7 @@ const createFood = async (req, res, next) => {
 	const saveFood = await newFood.save();
 	res.status(200).json(saveFood);
 	console.log(saveFood);
+	console.log(req.file);
 	next();
 };
 
@@ -25,6 +26,8 @@ const getFoods = async (req, res, next) => {
 	} else if (req.query.catagory?.toLowerCase() === "all") {
 		res.status(200).json(foods);
 	} else {
+		const count = foods.length;
+		console.log(count);
 		res.status(200).json(foods);
 	}
 	next();
@@ -41,8 +44,8 @@ const updateFood = async (req, res, next) => {
 };
 
 const getFoodById = async (req, res, next) => {
-	console.log(req.params.id);
-	const Food = await Foods.findById(req.params.id);
+	console.log(req.params._id);
+	const Food = await Foods.findOne({ title: req.params._id });
 	res.status(200).json(Food);
 	next();
 };

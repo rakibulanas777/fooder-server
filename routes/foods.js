@@ -1,16 +1,16 @@
 const express = require("express");
+const multer = require("multer");
 const {
 	getFoods,
 	getFoodById,
 	deleteFood,
 	createFood,
 	updateFood,
-} = require("../controllers/Foods");
-const { getUsers, login, register, protect } = require("../controllers/user");
+} = require("../controllers/foods");
 
 const router = express.Router();
 
-router.get("/:id", getFoodById);
+router.get("/:_id", getFoodById);
 router.delete("/:id", deleteFood);
 router.put("/:id", updateFood);
 router.get("/", getFoods);

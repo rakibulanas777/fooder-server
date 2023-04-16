@@ -1,5 +1,6 @@
 const express = require("express");
 const dotenv = require("dotenv");
+const multer = require("multer");
 const authRoute = require("./routes/auth");
 const userRoute = require("./routes/users");
 const orderRoute = require("./routes/order");
@@ -38,6 +39,18 @@ app.use("/order", orderRoute);
 app.use("/users", userRoute);
 // app.use("/register", authRoute);
 app.use("/foods", foodRoute);
+// default error handler
+app.use((err, req, res, next) => {
+	if (err) {
+		if (err instanceof multer.MulterError) {
+			res.status(500).send("There was an upload error!");
+		} else {
+			res.status(500).send(err.message);
+		}
+	} else {
+		res.send("success");
+	}
+});
 
 app.listen(port, () => {
 	connect();

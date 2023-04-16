@@ -5,10 +5,7 @@ const FoodsSchema = new mongoose.Schema(
 			type: String,
 			required: true,
 		},
-		qty: {
-			type: Number,
-			default: 0,
-		},
+
 		desc: {
 			type: String,
 			required: true,
@@ -19,9 +16,6 @@ const FoodsSchema = new mongoose.Schema(
 			required: true,
 		},
 		image: {
-			type: String,
-		},
-		description: {
 			type: String,
 		},
 
